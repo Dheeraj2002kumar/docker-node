@@ -50,3 +50,118 @@ Server started on PORT:4000
 >> docker compose down  # it will remove all stack container
 
 >> docker compose up -d  # -d means detach (background me run karo)
+
+-------------------------------------------------
+
+>> docker run -it --name my_container busybox   # run the container
+>> / # ping google.com          
+>> docker network inspect bridge                # check the inspect bridge and you can check the container Running and ip address
+
+
+
+PS C:\Users\hp> docker network ls     # check available DRIVER
+NETWORK ID     NAME      DRIVER    SCOPE
+4db4f8794982   bridge    bridge    local
+2073c85e13e3   host      host      local
+f364bc5b00d7   none      null      local
+PS C:\Users\hp>
+
+
+
+
+PS C:\Users\hp> docker run -it --network=host busybox    # it is Running in host mode means using your network
+/ # ping google.com
+PING google.com (142.251.42.238): 56 data bytes
+64 bytes from 142.251.42.238: seq=0 ttl=64 time=11.556 ms
+64 bytes from 142.251.42.238: seq=1 ttl=64 time=5.216 ms
+64 bytes from 142.251.42.238: seq=2 ttl=64 time=19.053 ms
+64 bytes from 142.251.42.238: seq=3 ttl=64 time=17.100 ms
+^C
+--- google.com ping statistics ---
+4 packets transmitted, 4 packets received, 0% packet loss
+round-trip min/avg/max = 5.216/13.231/19.053 ms
+/ #
+
+
+
+
+
+PS C:\Users\hp> docker run -it --network=none busybox    # it is Running none mode means don't have internet access
+/ # ping google.com
+ping: bad address 'google.com'
+/ #
+
+
+
+# create own network DRIVER
+PS C:\Users\hp> docker network create -d bridge test-network     # mode=bridge and test-network=network-name
+fa8c97c7e1e89d56212277733e21c9b7412695634914f4a4b9cae457b651f6d3
+PS C:\Users\hp> docker network ls
+NETWORK ID     NAME           DRIVER    SCOPE
+4db4f8794982   bridge         bridge    local
+2073c85e13e3   host           host      local
+f364bc5b00d7   none           null      local
+fa8c97c7e1e8   test-network   bridge    local
+PS C:\Users\hp>
+
+
+
+
+
+# you can create Volume to memorise the file
+PS C:\Users\hp> docker run -it -v C:\Users\hp\Desktop\test-folder:/home/xyz ubuntu  # -v means Volume
+Unable to find image 'ubuntu:latest' locally
+latest: Pulling from library/ubuntu
+Digest: sha256:c35e29c9450151419d9448b0fd75374fec4fff364a27f176fb458d472dfc9e54
+Status: Downloaded newer image for ubuntu:latest
+root@2cfd0498cfe5:/# ls
+bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+root@2cfd0498cfe5:/# cd home/
+root@2cfd0498cfe5:/home# ls
+ubuntu  xyz
+root@2cfd0498cfe5:/home# cd xyz/
+root@2cfd0498cfe5:/home/xyz# mkdir hello-from-docker
+root@2cfd0498cfe5:/home/xyz# touch index.js
+root@2cfd0498cfe5:/home/xyz#
+
+
+
+
+
+# Dockerfile inside the command order is very important
+when we change the line of the code/file then it will re-run the command so we should order accordinglly. like this
+
+```bash
+FROM ubuntu 
+
+RUN apt-get update
+RUN apt-get install -y curl
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
+RUN apt-get upgrade -y
+RUN apt-get install -y nodejs
+
+# Set the working directory inside the container
+WORKDIR /app  
+
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+RUN npm install
+
+COPY server.js server.js 
+
+
+ENTRYPOINT [ "node", "server.js" ]
+```
+
+PS C:\Users\hp> docker exec -it 325e171cf77abb357e40575fbcd3a1a35effc0242f9939366891f4a0c6f2b92e bash
+root@325e171cf77a:/app# ls
+node_modules  package-lock.json  package.json  server.js
+root@325e171cf77a:/app# cd ..
+root@325e171cf77a:/# ls
+app  bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+root@325e171cf77a:/# cd app
+root@325e171cf77a:/app# ls
+node_modules  package-lock.json  package.json  server.js
+root@325e171cf77a:/app#
+
+
