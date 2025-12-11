@@ -1,3 +1,34 @@
+### Part 11
+1. Problem Statement
+2. Installation of Docker CLI and Desktop
+3. Understanding Images v/s Containers
+4. Running Ubuntu Image in Container
+5. Multiple Containers
+6. Port Mappings
+7. Environment Variables
+8. Dockerization of Node.js Application
+    1. Dockerfile
+    2. Caching Layers
+    3. Publishing to Hub
+
+9. Docker Compose
+    1. Services
+    2. Port Mapping
+    3. Env Variables
+
+### Part 2
+1. Docker Networking
+    1. Bridge
+    2. Host
+
+2. Volume Mounting
+3. Efficient Caching in Layers
+4. Docker Multi-Stage Builds
+
+--------------------------------------
+
+
+
 docker build -t dheeraj/nodejs-image .
 
 docker run -it -p 8000:8000 dheeraj/nodejs-image  # after build the image then run the command in terminal
