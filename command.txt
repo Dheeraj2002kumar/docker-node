@@ -1,0 +1,21 @@
+docker build -t dheeraj/nodejs-image .
+
+docker run -it -p 8000:8000 dheeraj/nodejs-image  # after build the image then run the command in terminal
+
+# PS C:\Users\hp> docker exec -it c9a3b77ee bash    # you will come in container and you can do anything
+root@c9a3b77eec2e:/#
+
+
+C:\Users\hp>docker run -it -e PORT=4000 -p 4000:4000 dheeraj/nodejs-image  # you can pass environment variable and it will run on the given PORT
+Server started on PORT:4000
+
+
+# you can add multiple services with the help of docker-compose.yml file
+# then run docker compose up
+
+
+>> docker compose up   # start the services
+
+>> docker compose down  # it will remove all stack container
+
+>> docker compose up -d  # -d means detach (background me run karo)
